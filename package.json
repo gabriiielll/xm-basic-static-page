@@ -6,6 +6,9 @@
   "scripts": {
     "create": "node xm.js"
   },
+  "bin": {
+    "create": "node xm.js"
+  },
   "repository": {
     "type": "git",
     "url": ""
