@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
 * Title: Basic static page generator
 * Description: For generating basic html, css and js static page
@@ -6,30 +8,39 @@
 *
 */
 
-import { appendFile, writeFile, existsSync, mkdirSync, cpSync, readFile } from 'fs';
+import { writeFile, createWriteStream, existsSync, mkdirSync, readFile } from 'fs';
+import { get } from 'https';
 import { prompt } from './prompt.js';
 
 const projectName = await prompt('Folder name: ');
+const gitUrl = 'https://raw.githubusercontent.com/gabriiielll/xm-basic-static-page/3940c0362cbe18f7ab04d8a03fe8e74985a23321';
 
 if (!existsSync(projectName)) {
     new Promise(() => {
+        
+
         mkdirSync(`./${projectName}`, {recursive: true});
-        cpSync('./package/assets',`./${projectName}/assets`, {recursive: true});
+        mkdirSync(`./${projectName}/assets`, {recursive: true});
+        mkdirSync(`./${projectName}/assets/css`, {recursive: true});
+        mkdirSync(`./${projectName}/assets/js`, {recursive: true});
+        mkdirSync(`./${projectName}/assets/img`, {recursive: true});
+        mkdirSync(`./${projectName}/assets/fonts`, {recursive: true});
+        download(`${gitUrl}/package/assets/css/style.css`,`./${projectName}/assets/css/style.css`);
+        download(`${gitUrl}/package/assets/img/close.svg`,`./${projectName}/assets/img/close.svg`);
+        download(`${gitUrl}/package/assets/img/hamburger.svg`,`./${projectName}/assets/img/hamburger.svg`);
+        download(`${gitUrl}/package/assets/js/script.js`,`./${projectName}/assets/js/script.js`);
+        download(`${gitUrl}/package/index.html`,`./${projectName}/index.html`);
     }) 
 }
 
 // Build html file
 const title = await prompt('Document Title: ');
+const html = `./${projectName}/index.html`;
 
 new Promise(() => {
-    readFile('./package/index.html', 'utf-8', (err, data) => {
-        const content = data.replace('${title}',title).replace('${year}',Date('Y'));
-        const newFile = `./${projectName}/${title}.html`;
-        if (!existsSync(`${newFile}`)) {
-            appendFile(newFile,content, (err) => {});
-        } else {
-            console.error(`File ${title}.html already exist!`);
-        }
+    readFile(html, 'utf-8', (err, data) => {
+        const content = data.replace('${title}',title).replace('${year}',new Date().getFullYear());
+        writeFile(html,content, (err) => {});
     });
 });
 
@@ -47,9 +58,27 @@ new Promise(() => {
     readFile(`./${projectName}/assets/css/style.css`, 'utf-8', (err, data) => {
         const content = data.replace(`--xcolors:'';`,colors).replace(`--xfonts:'';`,fonts).replace('xMaxWidth',nullFill(maxWidth));
         const newFile = `./${projectName}/assets/css/style.css`;
-        writeFile(newFile, content, (err) => {});
+        writeFile(newFile, content, (err) => {
+            process.exit();
+        });
     });
 });
+
+function download(url, filePath) {
+    get(url, (response) => {
+        if (response.statusCode === 200) {
+            const file = createWriteStream(filePath);
+                response.pipe(file);
+                file.on('finish', () => {
+                    file.close();
+                });
+        }
+    });
+}
+
+function nullFill(val) {
+    return !val ? "''" : (val.includes('http') ? `url('${val}')` : val);
+}
 
 async function cssVarsBuild(count, text, font = false) {
     const initArr = [];
@@ -60,8 +89,4 @@ async function cssVarsBuild(count, text, font = false) {
     initArr.map((val, key) => {finArr.push(`--${propName}-${key+1}:${nullFill(val)};`);});
 
     return finArr.join('\n');
-}
-
-function nullFill(val) {
-    return !val ? "''" : (val.includes('http') ? `url('${val}')` : val);
 }

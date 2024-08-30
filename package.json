@@ -1,17 +1,17 @@
 {
   "name": "xm-basic-static-page",
-  "version": "1.0.0",
+  "version": "1.4.1",
   "description": "For generating basic html, css and js static page",
   "main": "xm.js",
   "scripts": {
     "create": "node xm.js"
   },
   "bin": {
-    "create": "xm.js"
+    "create": "./xm.js"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/gabriiielll/xm-basic-static-page"
   },
   "keywords": [
     "static-page", "generator", "html-css-js", "basic-static-page"
