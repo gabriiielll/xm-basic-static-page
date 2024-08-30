@@ -7,7 +7,7 @@
     "create": "node xm.js"
   },
   "bin": {
-    "create": "node xm.js"
+    "create": "xm.js"
   },
   "repository": {
     "type": "git",
