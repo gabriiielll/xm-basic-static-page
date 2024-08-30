@@ -1,0 +1,19 @@
+{
+  "name": "xm-basic-static-page",
+  "version": "1.0.0",
+  "description": "For generating basic html, css and js static page",
+  "main": "xm.js",
+  "scripts": {
+    "create": "node xm.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "static-page", "generator", "html-css-js", "basic-static-page"
+  ],
+  "type": "module",
+  "author": "Gabriel",
+  "license": "ISC"
+}

@@ -1,0 +1,1 @@
+document.querySelector('.hamburger').onclick = () => { document.body.classList.toggle('show-menu') };
